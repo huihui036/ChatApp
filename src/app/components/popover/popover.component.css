@@ -1,0 +1,11 @@
+.popover {
+  position: fixed;
+  right: 0;
+  top: 44px;
+}
+.popover ion-item {
+  line-height: 32px;
+}
+.popover ion-item ion-icon {
+  margin: 10px 10px 0 0;
+}

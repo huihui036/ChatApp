@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar color='light' class="top-bar" mode='ios'>
+    <ion-buttons slot="start">
+      <ion-back-button class="back" color="dark" defaultHref='tabs' text=''></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>我的好友</ion-title>
+    <ion-button (click)="onClick()" fill='clear' slot="end" color='dark'>
+      <ion-icon name="menu"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="chattext" id="chattext">
+    <div id="spangs">
+      <!-- 聊天信息 -->
+        <div  *ngFor="let item of chatdatas2" [ngClass]="{'youself':item.nickname==userdata.usrename}">
+    
+           <li  *ngIf="item.type=='textsay'" (press)="doPress(item.id)" >{{item.saytext}}</li> 
+        
+            <img *ngIf="item.fielst=='0' " src="{{item.urls}}" style="width: 40%;max-width: 200px;">
+          
+            <a *ngIf="item.fielst=='1'" href="{{item.urls}}">[文件]{{item.saytext}}</a> 
+            <p *ngIf="item.type=='mp3'" (click)="palyatio(item.urls)" class="audio-player">[语音]</p>
+            <!-- <audio *ngIf="item.type=='mp3'" src="{{item.urls}}" controls class="audio-player"></audio> -->
+    
+        </div>
+            <!-- <button id="ab" style="width: 50px; height: 60px ; background-color: cornflowerblue; counter-reset: none;" ></button> -->
+            <div class="settex">
+              <ion-card style="width: 20%;">
+             <ul class="settext"  [ngClass]="{dispnone:dispnone}" >
+               <li (click)='delet(delettexid)'>删除</li>
+               <li>撤回</li>
+             </ul>
+              
+              </ion-card>
+            </div>
+    </div>
+    <div [ngClass]="{fiesupload:fiesupload}" class="nones">文件正在上传请等待</div> 
+    <div class="madi" id={{madi}}> <img src="../../../assets/images/luyin.gif" alt=""></div>
+    </div>
+<!-- 表情包 -->
+  <div  class={{eojios}}>
+    <div class="emjio" >
+        <p *ngFor="let item of emojis" (click)='senemjos($event)'>{{item.emoji}}</p>
+    </div>
+   
+</div>
+
+
+</ion-content>
+
+<!-- <ion-icon name="images-outline"></ion-icon> -->
+<!-- <ion-icon name="camera-outline"></ion-icon> -->
+<!-- <ion-icon name="mic-outline"></ion-icon> -->
+<!-- <ion-icon name="happy-outline"></ion-icon> -->
+<!-- <ion-icon name="folder-outline"></ion-icon> -->
+
+
+<ion-footer>
+  <ion-toolbar color='light'>
+    <!-- 输入框 -->
+    <div class="textrow">
+
+    <ion-input type="text" autofocus='true' clearInput='true' debounce='500' required='true' class='input' (keyup.enter)="addtods()"  [(ngModel)]="text"></ion-input>
+    <div class="send-btn" (click)='btnsentext()'> <ion-button size="small" color="secondary">发送</ion-button></div>
+ 
+  </div>
+    <!-- 麦克风按钮 -->
+    <ion-button class="record-btn" fill="clear" shape="round">
+      <ion-icon name="mic-outline" color='dark' ></ion-icon>
+    </ion-button>
+    <!-- 图片按钮 -->
+
+    
+    <ion-button  class="file" fill="clear"  shape="round">
+      <ion-icon name="images-outline" color='dark'></ion-icon>
+      <input type="file" id="uploadfile" class="uploader"  name="file"  multiple>
+  </ion-button>
+    <!-- <ion-button (click)="image($event)" fill="clear" shape="round">
+      <ion-icon name="images-outline" color='dark'></ion-icon>
+    </ion-button> -->
+    <!-- 相机按钮 -->
+    <!-- <ion-button (click)="camera($event)" fill="clear" shape="round">
+      <ion-icon name="camera-outline" color='dark'></ion-icon>
+    </ion-button> -->
+    <!-- 表情按钮 -->
+    <ion-button (click)="emoji()"  fill="clear" shape="round">
+      <ion-icon name="happy-outline" color='dark'></ion-icon>
+    </ion-button>
+    <!-- 文件按钮 -->
+    <!-- <ion-button (click)="file($event)"  fill="clear" shape="round">
+      <ion-icon name="folder-outline" color='dark'></ion-icon>
+    </ion-button> -->
+  </ion-toolbar>
+  <div>
+  
+  </div>
+</ion-footer>

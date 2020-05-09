@@ -1,0 +1,20 @@
+
+<ion-content>
+  <div class="formdata" >
+    <div class="errode">
+      <p *ngIf="usercode == 201">添加成功</p>
+      <p *ngIf="usercode == 203">你们已经是好友</p>
+      <p *ngIf="usercode == 401">请输入用户邮箱</p>
+      <p *ngIf="usercode == 403">没有该用户</p>
+    </div>
+  
+  <div class="forms">
+      <input type="text"name="friendsemali"  [(ngModel)]="friendsemali" placeholder="请输入对方邮箱">
+    
+  </div>
+  <div class="login-btn" style="width: 100%;">
+    <ion-button color="success" style="width: 100%;" (click)="serach()">添加</ion-button>
+  </div>
+</div>
+
+</ion-content>

@@ -1,0 +1,116 @@
+.back{
+    width: 15px;
+}
+.input{
+    border-radius: 20px;
+    margin: 5px 5px;
+    width: 80%;
+    // margin: 0 15px 0 15px;
+    background: #fff;
+}
+
+.textrow{
+    display: flex;
+    align-items: center;
+}
+
+#spangs{
+    height: 83vh;
+    overflow: auto;
+}
+.sendtext{
+    width: 90%;
+    transform: translate(5%);
+  
+    position: fixed;
+    bottom: 65px;
+    height: 30px;
+
+}
+.youself{
+    text-align: right;
+}
+
+
+.emjioacrive{
+    display: none;
+}
+.emjio{
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 200px;
+    
+    position: fixed;
+    
+    bottom: 106px;
+    
+    z-index: 99;
+    
+    background-color:#fff;
+    
+
+    transform: translate(10%);
+    overflow: auto;
+    p{
+        font-size: 22px;
+    margin: 5px;
+
+    }
+}
+// 文件 按钮
+
+.file input {
+    position: absolute;
+   font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.madi{
+    position: fixed;
+    width: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+}
+// 录音gif图片显示
+#madi{
+   display: none;
+}
+
+
+.settext{
+    display: none;
+}
+.dispnone{
+    display:block;
+}
+.settext li{
+    border-bottom: 0.1rem solid #f5f5f5;
+    padding: 10px;
+    text-align: center;
+}
+// 文件上传
+.nones{
+    display:none;
+   
+   }
+   .fiesupload{
+       display: block;
+     
+       position: fixed;
+       text-align: center;
+       width: 100%;
+       line-height: 88px;
+       top: 50%;
+       background-color: #ddd;
+       font-size: 22px;
+       height: 88px;
+       opacity: 0.8;
+       z-index: 999;
+   }
+  

@@ -1,0 +1,9 @@
+.back {
+  width: 15px;
+}
+.input {
+  border-radius: 20px;
+  margin: 5px 5%;
+  width: 90%;
+  background: #fff;
+}

@@ -1,0 +1,46 @@
+
+
+<ion-content>
+  <div class="formdata" [ngClass]="{logibox: setlogin}">
+  <div class="forms">
+    <form>
+      <input type="text" name="username"  [(ngModel)]="username" placeholder="用户名">
+      <br/>
+      <input type="password" name="password" [(ngModel)]="password" placeholder="密码">
+    </form>
+  </div>
+  <div class="btn" >
+    <ion-button color="success" style="width: 100%;" (click)="Login()">登入</ion-button>
+  </div>
+  <div class="btn" >
+    <ion-button color="light" style="width: 100%;" (click)="register()">注册</ion-button>
+  </div>
+</div>
+
+<!-- 注册 -->
+
+<div class="formdata" [ngClass]="{logibox: !setlogin}">
+  <div class="errode">
+    <p *ngIf="usercode == 201">注册成功</p>
+ 
+    <p *ngIf="usercode == 401">邮箱已经被使用</p>
+
+  </div>
+  <div class="forms">
+    <form>
+
+      <input type="text" [(ngModel)]="emailre"  placeholder="邮箱" name="email">
+     
+
+      <input type="text" name="username"  [(ngModel)]="usernamere" placeholder="用户名">
+      <br/>
+      <input type="password" name="password" [(ngModel)]="passwordre" placeholder="密码">
+    </form>
+  </div>
+  
+  <div class="btn" >
+    <ion-button color="light" style="width: 100%;" (click)="registernow()">立即注册</ion-button>
+  </div>
+</div>
+
+</ion-content>
