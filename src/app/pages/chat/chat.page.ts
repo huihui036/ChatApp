@@ -18,7 +18,7 @@ export class ChatPage {
   public text: string = '';
   public fiesupload: boolean = false
   public ws;
-  public dispnone:boolean = false
+  public dispnone: boolean = false
 
   public emojis: any[];
   public demoji: boolean = true;
@@ -26,10 +26,12 @@ export class ChatPage {
   public delettexid
   public madi
 
+  public withdrawconter
+
   userdata: any = window.localStorage.getItem("userdata") || ''
   constructor(private http: ServersService, private Servers: ServerDatas) { }
- 
- 
+
+
   ngOnInit(): void {
     this.userdata = JSON.parse(this.userdata)
     this.userdata = this.Servers.username || this.userdata;
@@ -118,66 +120,66 @@ export class ChatPage {
     }
 
     // 发送语音
-     // 语音
-     let chunks = [];
+    // 语音
+    let chunks = [];
 
-     const constraints = { audio: true };
-     if (navigator.mediaDevices.getUserMedia) { }
- 
-     navigator.mediaDevices.getUserMedia(constraints).then(
-       stream => {
-         console.log("授权成功！");
+    const constraints = { audio: true };
+    if (navigator.mediaDevices.getUserMedia) { }
+
+    navigator.mediaDevices.getUserMedia(constraints).then(
+      stream => {
+        console.log("授权成功！");
         //  var MediaRecorder
         // @ts-ignore
-         const mediaRecorder = new MediaRecorder(stream);
-         $('.record-btn').click(function () {
-           if (mediaRecorder.state === "recording") {
-             mediaRecorder.stop();
-             console.log("录音借宿")
+        const mediaRecorder = new MediaRecorder(stream);
+        $('.record-btn').click(function () {
+          if (mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            console.log("录音借宿")
             that.madi = 'madi'
-         //    $('.record-btn').html("record");
-          
-           } else {
-             mediaRecorder.start();
-             console.log("录音中...");
-             that.madi = ''
-           //  $('.record-btn').html("stop");
- 
-           }
-          
-         })
-         mediaRecorder.ondataavailable = e => {
-           chunks.push(e.data);
-         };
-         mediaRecorder.onstop = async e => {
-           console.log(chunks)
-           var blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
-           chunks = [];
-           //  var audioURL = window.URL.createObjectURL(blob);
-           // $('.audio-player').attr("src", audioURL);
- 
-           let form = new FormData();
-           form.append("file", blob);
- 
-           console.log(form)
- 
-           // let readers = new FileReader();  //调用FileReader
- 
-           $.ajax({
-             type: 'post',
-             url: "http://127.0.0.1:3006/uploads",
-             data: form,
-             contentType: false,
-             processData: false,
-             cache: false,    //缓存
-             success: function (r) {
- 
-             }
-           })
-         };
-         console.log(mediaRecorder.state);
- 
-       })
+            //    $('.record-btn').html("record");
+
+          } else {
+            mediaRecorder.start();
+            console.log("录音中...");
+            that.madi = ''
+            //  $('.record-btn').html("stop");
+
+          }
+
+        })
+        mediaRecorder.ondataavailable = e => {
+          chunks.push(e.data);
+        };
+        mediaRecorder.onstop = async e => {
+          console.log(chunks)
+          var blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
+          chunks = [];
+          //  var audioURL = window.URL.createObjectURL(blob);
+          // $('.audio-player').attr("src", audioURL);
+
+          let form = new FormData();
+          form.append("file", blob);
+
+          console.log(form)
+
+          // let readers = new FileReader();  //调用FileReader
+
+          $.ajax({
+            type: 'post',
+            url: "http://127.0.0.1:3006/uploads",
+            data: form,
+            contentType: false,
+            processData: false,
+            cache: false,    //缓存
+            success: function (r) {
+
+            }
+          })
+        };
+        console.log(mediaRecorder.state);
+
+      })
 
     // 文件 发送
     $("#uploadfile").change(function () {
@@ -192,10 +194,12 @@ export class ChatPage {
       console.log(form)
       var reader = new FileReader();  //调用FileReader
       let a = reader.readAsDataURL(files);
+      // tslint:disable-next-line: only-arrow-functions
       reader.onload = async function (evt) {
         // console.log(evt.target.result)
         let c = new Promise((resolve, reject) => {
-          resolve(HmacSHA1(evt.target.result, "Key"))
+          // @ts-ignore
+          resolve(HmacSHA1(evt.target.result, "123"))
         })
 
         // let a = HmacSHA1(evt.target.result, "Key")
@@ -232,35 +236,40 @@ export class ChatPage {
 
     })
 
-    //返回的数据
+    // 返回的数据
     this.ws.onmessage = function (e) {
-      let saytext = JSON.parse(e.data)
+      let saytext = JSON.parse(e.data);
       // that.chatdatas2.push(saytext)
       that.chatdatas.push(saytext)
-     that.chathisory(that.chatdatas)
+      that.chathisory(that.chatdatas)
+      if (saytext.type == 'withdrawtex') {
+        that.didh()
+      }
       // that.chatdatas.push(saytext)
     };
 
     this.ws.onerror = function (event) {
-      //socket error信息;
+      // socket error信息;
       console.log(event);
 
     };
     this.ws.onclose = function () {
-      //socket 关闭后执行;
+      // socket 关闭后执行;
 
     };
 
   }
+
+
   // 选择发送到的表情包
-  senemjos(e){
-    this.text += e.target.innerHTML
-    console.log(e.target.innerHTML)
+  senemjos(e) {
+    this.text += e.target.innerHTML;
+    console.log(e.target.innerHTML);
   }
-  //发送文字
-  sendtext(){
-    console.log(this.text)
-    let fridensname = window.sessionStorage.getItem('firdens') || ''
+  // 发送文字
+  sendtext() {
+    console.log(this.text);
+    let fridensname = window.sessionStorage.getItem('firdens') || '';
     //console.log(22)
     this.ws.send(JSON.stringify({
       text: this.text,
@@ -273,26 +282,26 @@ export class ChatPage {
       firdensname: fridensname
 
     }));
-    this.text =''
+    this.text = ''
   }
-  addtods(){
-    this.sendtext()
+  addtods() {
+    this.sendtext();
   }
-  btnsentext(){
-    this.sendtext()
+  btnsentext() {
+    this.sendtext();
   }
- 
-// 语音播放
-palyatio(url) {
-  let audio = new Audio(url);
-  audio.play();
-  console.log(url);
-}
+
+  // 语音播放
+  palyatio(url) {
+    let audio = new Audio(url);
+    audio.play();
+    console.log(url);
+  }
 
 
-   // 聊天数据库
+  // 聊天数据库
 
-   chathisory(datas) {
+  chathisory(datas) {
     let db
     let that = this
     console.log("data:", that.chatdatas2)
@@ -303,6 +312,9 @@ palyatio(url) {
       console.log('execute onsuccess');
       const transaction = db.transaction(['users'], 'readwrite')
       const objectStore = transaction.objectStore('users')
+      //
+      // objectStore.createIndex('saytext', 'saytext', { unique: false });
+
       datas.forEach(element => {
         objectStore.put(element)
       });
@@ -323,6 +335,7 @@ palyatio(url) {
       db = event.target.result
       console.log('execute onupgradeneeded');
       const objectStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true })
+      objectStore.createIndex("saytext", "saytext", { unique: false });
       console.log(datas)
       objectStore.transaction.oncomplete = function (event) {
         const transaction = db.transaction(['users'], 'readwrite')
@@ -339,14 +352,14 @@ palyatio(url) {
 
   //删除聊天
 
-  delet(id){
+  delet(id) {
     const request = window.indexedDB.open('DATA_chat', 1)
-    request.onsuccess = (ev:any) => {
+    request.onsuccess = (ev: any) => {
       let db = ev.target.result;
       let transaction = db.transaction(['users'], 'readwrite');
       let objectStore = transaction.objectStore('users');
       let delRequest = objectStore.delete(id);
-       
+
       delRequest.onsuccess = function (event) {
         console.log('数据删除成功');
       };
@@ -359,9 +372,61 @@ palyatio(url) {
     this.dispnone = false
   }
   // 长按
-  doPress(id){
-  this.delettexid = id
-  this.dispnone = true
-  console.log(id)
+  doPress(id, text) {
+    this.delettexid = id;
+    this.withdrawconter = text;
+    this.dispnone = true;
+    console.log(id, text);
   }
+  // 撤回聊天
+
+  withdraw() {
+    console.log(this.withdrawconter);
+    this.withdrawtex()
+    // this.withdrawdb(this.withdrawconter)
+  }
+  // 撤回的消息
+  didh() {
+    console.log("这是一条撤回的消息")
+    this.withdrawdb(this.withdrawconter)
+  }
+  withdrawdb(tex) {
+    const request = window.indexedDB.open('DATA_chat', 1);
+    request.onsuccess = (ev: any) => {
+      let db = ev.target.result;
+      let transaction = db.transaction(['users'], 'readwrite');
+      let objectStore = transaction.objectStore('users');
+      let indexs = objectStore.index('saytext');
+      let getRequest = indexs.get(tex);
+
+      getRequest.onsuccess = function (event) {
+        console.log('成功', event.target.result);
+        console.log(event.target.result.id)
+        objectStore.delete(event.target.result.id);
+
+      };
+      getRequest.onerror = function (event) {
+        console.log('失败');
+      };
+    }
+  }
+  withdrawtex() {
+    console.log(this.withdrawconter);
+    let fridensname = window.sessionStorage.getItem('firdens') || '';
+    //console.log(22)
+    this.ws.send(JSON.stringify({
+      text: this.withdrawconter,
+      uid: this.userdata.uid,
+      nickname: this.userdata.usrename,
+      privatechat: 2,
+      type: 'withdrawtex',
+      filesmd5: '',
+      //  bridge: [22]
+      firdensname: fridensname
+
+    }));
+
+  }
+
+
 }
