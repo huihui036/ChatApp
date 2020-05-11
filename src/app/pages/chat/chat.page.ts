@@ -25,7 +25,6 @@ export class ChatPage {
   public eojios: string
   public delettexid
   public madi
-
   public withdrawconter
 
   userdata: any = window.localStorage.getItem("userdata") || ''
@@ -194,12 +193,11 @@ export class ChatPage {
       console.log(form)
       var reader = new FileReader();  //调用FileReader
       let a = reader.readAsDataURL(files);
-      // tslint:disable-next-line: only-arrow-functions
       reader.onload = async function (evt) {
         // console.log(evt.target.result)
         let c = new Promise((resolve, reject) => {
           // @ts-ignore
-          resolve(HmacSHA1(evt.target.result, "123"))
+          resolve(HmacSHA1(evt.target.result, "Key"))
         })
 
         // let a = HmacSHA1(evt.target.result, "Key")
@@ -236,40 +234,38 @@ export class ChatPage {
 
     })
 
-    // 返回的数据
+    //返回的数据
     this.ws.onmessage = function (e) {
-      let saytext = JSON.parse(e.data);
+      let saytext = JSON.parse(e.data)
       // that.chatdatas2.push(saytext)
       that.chatdatas.push(saytext)
       that.chathisory(that.chatdatas)
       if (saytext.type == 'withdrawtex') {
-        that.didh()
+        that.didh(saytext.saytext)
       }
       // that.chatdatas.push(saytext)
     };
 
     this.ws.onerror = function (event) {
-      // socket error信息;
+      //socket error信息;
       console.log(event);
 
     };
     this.ws.onclose = function () {
-      // socket 关闭后执行;
+      //socket 关闭后执行;
 
     };
 
   }
-
-
   // 选择发送到的表情包
   senemjos(e) {
-    this.text += e.target.innerHTML;
-    console.log(e.target.innerHTML);
+    this.text += e.target.innerHTML
+    console.log(e.target.innerHTML)
   }
-  // 发送文字
+  //发送文字
   sendtext() {
-    console.log(this.text);
-    let fridensname = window.sessionStorage.getItem('firdens') || '';
+    console.log(this.text)
+    let fridensname = window.sessionStorage.getItem('firdens') || ''
     //console.log(22)
     this.ws.send(JSON.stringify({
       text: this.text,
@@ -279,16 +275,17 @@ export class ChatPage {
       type: 'textsay',
       filesmd5: '',
       //  bridge: [22]
-      firdensname: fridensname
+      firdensname: fridensname,
+      statacode:1 // 1 没有撤回的  0撤回的
 
     }));
     this.text = ''
   }
   addtods() {
-    this.sendtext();
+    this.sendtext()
   }
   btnsentext() {
-    this.sendtext();
+    this.sendtext()
   }
 
   // 语音播放
@@ -312,9 +309,6 @@ export class ChatPage {
       console.log('execute onsuccess');
       const transaction = db.transaction(['users'], 'readwrite')
       const objectStore = transaction.objectStore('users')
-      //
-      // objectStore.createIndex('saytext', 'saytext', { unique: false });
-
       datas.forEach(element => {
         objectStore.put(element)
       });
@@ -377,18 +371,21 @@ export class ChatPage {
     this.withdrawconter = text;
     this.dispnone = true;
     console.log(id, text);
+    
   }
   // 撤回聊天
 
-  withdraw() {
-    console.log(this.withdrawconter);
+  withdraw(drawstex) {
+    console.log(drawstex);
     this.withdrawtex()
-    // this.withdrawdb(this.withdrawconter)
+   this.withdrawdb(drawstex)
+    
   }
   // 撤回的消息
-  didh() {
+  didh(saytext) {
     console.log("这是一条撤回的消息")
-    this.withdrawdb(this.withdrawconter)
+    this.withdrawdb(saytext)
+    this.chathisory(this.chatdatas)
   }
   withdrawdb(tex) {
     const request = window.indexedDB.open('DATA_chat', 1);
@@ -397,12 +394,21 @@ export class ChatPage {
       let transaction = db.transaction(['users'], 'readwrite');
       let objectStore = transaction.objectStore('users');
       let indexs = objectStore.index('saytext');
-      let getRequest = indexs.get(tex);
+      console.log("key:",tex)
+   //   objectStore.delete(5);
+     let getRequest = indexs.get(tex);
 
       getRequest.onsuccess = function (event) {
         console.log('成功', event.target.result);
-        console.log(event.target.result.id)
+        event.target.result.statacode = 0
+        objectStore.put(event.target.result);
+       if(event.target.result.statacode == 0 || event.target.result.type =='withdrawtex' ){
+         
         objectStore.delete(event.target.result.id);
+        
+       }
+        console.log(event.target.result.id)
+      //  objectStore.delete(event.target.result.id);
 
       };
       getRequest.onerror = function (event) {
@@ -427,6 +433,4 @@ export class ChatPage {
     }));
 
   }
-
-
 }
